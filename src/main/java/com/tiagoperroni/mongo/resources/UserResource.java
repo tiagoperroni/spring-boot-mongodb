@@ -1,7 +1,7 @@
 package com.tiagoperroni.mongo.resources;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tiagoperroni.mongo.domain.User;
+import com.tiagoperroni.mongo.dto.UserDTO;
 import com.tiagoperroni.mongo.services.UserService;
 
 @RestController
@@ -20,12 +21,10 @@ public class UserResource {
 	private UserService service;
 
 	@GetMapping
-	public ResponseEntity<List<User>> findAll() {
-		User maria = new User("1", "Maria Silva", "maria@gmail.com");
-		User alex = new User("2", "Alex Green", "alex@gmail.com");
+	public ResponseEntity<List<UserDTO>> findAll() {
 		List<User> list = service.findAll();
-		list.addAll(Arrays.asList(maria, alex));
-		return ResponseEntity.ok().body(list);
+		List<UserDTO> listDto = list.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDto);
 
 	}
 
